@@ -11,62 +11,37 @@ namespace CancellationAnalyzer.Test
     [TestClass]
     public class UnitTest : CodeFixVerifier
     {
-
-        //No diagnostics expected to show up
         [TestMethod]
-        public void TestMethod1()
+        public void NoDiagnosticInEmptyFile()
         {
             var test = @"";
 
             VerifyCSharpDiagnostic(test);
         }
 
-        //Diagnostic and CodeFix both triggered and checked for
         [TestMethod]
-        public void TestMethod2()
+        public void DiagnosticForMethod()
         {
-            var test = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
+            var source = @"
+using System.Threading;
+class T
+{
+    void M(CancellationToken t, int i)
     {
-        class TypeName
-        {   
-        }
-    }";
+    }
+}";
             var expected = new DiagnosticResult
             {
                 Id = CancellationTokenMustBeLastAnalyzer.DiagnosticId,
-                Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
+                Message = String.Format(CancellationTokenMustBeLastAnalyzer.MessageFormat, "T.M(System.Threading.CancellationToken, int)"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 15)
+                            new DiagnosticResultLocation("Test0.cs", 5, 10)
                         }
             };
 
-            VerifyCSharpDiagnostic(test, expected);
-
-            var fixtest = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        class TYPENAME
-        {   
-        }
-    }";
-            VerifyCSharpFix(test, fixtest);
+            VerifyCSharpDiagnostic(source, expected);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()

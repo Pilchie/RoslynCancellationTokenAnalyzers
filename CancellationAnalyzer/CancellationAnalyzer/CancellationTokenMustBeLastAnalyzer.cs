@@ -14,8 +14,8 @@ namespace CancellationAnalyzer
     public class CancellationTokenMustBeLastAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "CT1001";
+        public const string MessageFormat = "Method '{0}' should take CancellationToken as the last parameter";
         internal const string Title = "CancellationToken parameters should come last";
-        internal const string MessageFormat = "Method '{0}' should take CancellationToken as the last parameter";
         internal const string Category = "ApiDesign";
 
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true);
@@ -26,7 +26,7 @@ namespace CancellationAnalyzer
         {
             context.RegisterCompilationStartAction(compilationContext =>
             {
-                var cancellationTokenType = compilationContext.Compilation.GetTypeByMetadataName("System.Threading.CompilationToken");
+                var cancellationTokenType = compilationContext.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken");
                 if (cancellationTokenType != null)
                 {
                     compilationContext.RegisterSymbolAction(symbolContext =>
