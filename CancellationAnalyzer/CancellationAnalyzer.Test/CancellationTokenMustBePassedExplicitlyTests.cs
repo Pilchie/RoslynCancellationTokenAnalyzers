@@ -51,11 +51,30 @@ public class T
             };
 
             VerifyCSharpDiagnostic(source, expected);
+//            VerifyCSharpFix(source, @"
+//using System.Threading;
+//public class T
+//{
+//    public void M(CancellationToken t = default(CancellationToken))
+//    {
+//        M(t);
+//    }
+//}", codeFixIndex: 0);
+
+            VerifyCSharpFix(source, @"
+using System.Threading;
+public class T
+{
+    public void M(CancellationToken t = default(CancellationToken))
+    {
+        M(CancellationToken.None);
+    }
+}"/*, codeFixIndex: 1*/);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return null;
+            return new CancellationTokenMustBePassedExplicitlyCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()

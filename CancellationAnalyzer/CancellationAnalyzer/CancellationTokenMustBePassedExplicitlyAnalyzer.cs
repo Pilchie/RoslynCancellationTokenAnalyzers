@@ -57,7 +57,7 @@ namespace CancellationAnalyzer
             });
         }
 
-        private static HashSet<string> DetermineSpecifiedArguments(IMethodSymbol methodSymbol, InvocationExpressionSyntax invocation)
+        internal static HashSet<string> DetermineSpecifiedArguments(IMethodSymbol methodSymbol, InvocationExpressionSyntax invocation)
         {
             var specifiedArguments = new HashSet<string>();
             for (var i = 0; i < invocation.ArgumentList.Arguments.Count; i++)
