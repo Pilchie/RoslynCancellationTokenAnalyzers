@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="CancellationTokenMustBeLastCodeFixProvider.cs" />
     <Compile Include="CancellationTokenMustBeLastAnalyzer.cs" />
+    <Compile Include="CancellationTokenShouldBeOptionalInPublicApisAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

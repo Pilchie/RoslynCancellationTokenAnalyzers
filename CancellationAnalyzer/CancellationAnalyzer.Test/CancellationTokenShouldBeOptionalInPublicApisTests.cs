@@ -9,7 +9,7 @@ using CancellationAnalyzer;
 namespace CancellationAnalyzer.Test
 {
     [TestClass]
-    public class UnitTest : CodeFixVerifier
+    public class CancellationTokenShouldBeOptionalInPublicApisTests : CodeFixVerifier
     {
         [TestMethod]
         public void NoDiagnosticInEmptyFile()
@@ -44,56 +44,14 @@ class T
             VerifyCSharpDiagnostic(source, expected);
         }
 
-        [TestMethod]
-        public void NoDiagnosticWhenLastParam()
-        {
-            var test = @"
-using System.Threading;
-class T
-{
-    void M(int i, CancellationToken t)
-    {
-    }
-}";
-            VerifyCSharpDiagnostic(test);
-        }
-
-        [TestMethod]
-        public void NoDiagnosticWhenOnlyParam()
-        {
-            var test = @"
-using System.Threading;
-class T
-{
-    void M(CancellationToken t)
-    {
-    }
-}";
-            VerifyCSharpDiagnostic(test);
-        }
-
-        [TestMethod]
-        public void NoDiagnosticWhenParamsComesAfter()
-        {
-            var test = @"
-using System.Threading;
-class T
-{
-    void M(CancellationToken t, params object[] args)
-    {
-    }
-}";
-            VerifyCSharpDiagnostic(test);
-        }
-
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return new CancellationTokenMustBeLastCodeFixProvider();
+            return null;
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new CancellationTokenMustBeLastAnalyzer();
+            return new CancellationTokenShouldBeOptionalInPublicApisAnalyzer();
         }
     }
 }
