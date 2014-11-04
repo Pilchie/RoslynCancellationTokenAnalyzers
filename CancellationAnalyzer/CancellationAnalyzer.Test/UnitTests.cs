@@ -88,7 +88,7 @@ class T
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return new CancellationAnalyzerCodeFixProvider();
+            return new CancellationTokenMustBeLastCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()

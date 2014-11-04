@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace CancellationAnalyzer
 {
     [ExportCodeFixProvider("CancellationAnalyzerCodeFixProvider", LanguageNames.CSharp), Shared]
-    public class CancellationAnalyzerCodeFixProvider : CodeFixProvider
+    public class CancellationTokenMustBeLastCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> GetFixableDiagnosticIds()
         {
