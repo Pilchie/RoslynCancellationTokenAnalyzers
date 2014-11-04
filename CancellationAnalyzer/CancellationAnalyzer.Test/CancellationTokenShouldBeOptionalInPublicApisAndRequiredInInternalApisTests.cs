@@ -63,6 +63,16 @@ public class T
             };
 
             VerifyCSharpDiagnostic(source, expected);
+
+            var fixedSource = @"
+using System.Threading;
+public class T
+{
+    public void M(CancellationToken t = default(CancellationToken))
+    {
+    }
+}";
+            VerifyCSharpFix(source, fixedSource);
         }
 
         [TestMethod]
@@ -88,16 +98,26 @@ public class T
             };
 
             VerifyCSharpDiagnostic(source, expected);
+
+            var fixedSource = @"
+using System.Threading;
+public class T
+{
+    void M(CancellationToken t)
+    {
+    }
+}";
+            VerifyCSharpFix(source, fixedSource);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return null;
+            return new CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new CancellationAnalyzer.CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer();
+            return new CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer();
         }
     }
 }
