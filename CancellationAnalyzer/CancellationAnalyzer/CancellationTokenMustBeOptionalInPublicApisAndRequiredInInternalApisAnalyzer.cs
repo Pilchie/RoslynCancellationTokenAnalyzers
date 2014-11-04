@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CancellationAnalyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer : DiagnosticAnalyzer
+    public class CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "CT1002";
         public const string MessageFormat = "Method '{0}' should {1} have optional CancellationToken parameter";

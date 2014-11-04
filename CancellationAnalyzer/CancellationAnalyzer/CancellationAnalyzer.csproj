@@ -33,11 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CancellationTokenMustBePassedExplicitlyCodeFixProvider.cs" />
-    <Compile Include="CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider.cs" />
+    <Compile Include="CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider.cs" />
     <Compile Include="CancellationTokenMustBePassedExplicitlyAnalyzer.cs" />
     <Compile Include="CancellationTokenMustBeLastCodeFixProvider.cs" />
     <Compile Include="CancellationTokenMustBeLastAnalyzer.cs" />
-    <Compile Include="CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.cs" />
+    <Compile Include="CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

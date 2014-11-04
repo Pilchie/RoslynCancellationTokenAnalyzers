@@ -9,7 +9,7 @@ using CancellationAnalyzer;
 namespace CancellationAnalyzer.Test
 {
     [TestClass]
-    public class CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisTests : CodeFixVerifier
+    public class CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisTests : CodeFixVerifier
     {
         [TestMethod]
         public void NoDiagnosticForDefaultAccessibilityMethodWithNoOptional()
@@ -53,8 +53,8 @@ public class T
 
             var expected = new DiagnosticResult
             {
-                Id = CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId,
-                Message = String.Format(CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.MessageFormat, "T.M(System.Threading.CancellationToken)", string.Empty),
+                Id = CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId,
+                Message = String.Format(CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.MessageFormat, "T.M(System.Threading.CancellationToken)", string.Empty),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -88,8 +88,8 @@ public class T
 }";
             var expected = new DiagnosticResult
             {
-                Id = CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId,
-                Message = String.Format(CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.MessageFormat, "T.M(System.Threading.CancellationToken)", "not"),
+                Id = CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId,
+                Message = String.Format(CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.MessageFormat, "T.M(System.Threading.CancellationToken)", "not"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -112,12 +112,12 @@ public class T
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return new CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider();
+            return new CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer();
+            return new CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer();
         }
     }
 }

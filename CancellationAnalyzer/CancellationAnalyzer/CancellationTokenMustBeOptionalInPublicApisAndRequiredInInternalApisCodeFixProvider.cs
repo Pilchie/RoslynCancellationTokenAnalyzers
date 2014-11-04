@@ -18,11 +18,11 @@ using Microsoft.CodeAnalysis.Simplification;
 namespace CancellationAnalyzer
 {
     [ExportCodeFixProvider("CancellationAnalyzerCodeFixProvider", LanguageNames.CSharp), Shared]
-    public class CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider : CodeFixProvider
+    public class CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> GetFixableDiagnosticIds()
         {
-            return ImmutableArray.Create(CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId);
+            return ImmutableArray.Create(CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId);
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
