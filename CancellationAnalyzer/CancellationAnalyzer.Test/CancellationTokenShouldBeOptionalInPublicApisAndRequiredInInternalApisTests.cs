@@ -26,6 +26,46 @@ public class T
         }
 
         [TestMethod]
+        public void NoDiagnosticForPublicMethodWithOptional()
+        {
+            var source = @"
+using System.Threading;
+public class T
+{
+    public void M(CancellationToken t = default(CancellationToken))
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(source);
+        }
+
+        [TestMethod]
+        public void DiagnosticForPublicMethodWithNoOptional()
+        {
+            var source = @"
+using System.Threading;
+public class T
+{
+    public void M(CancellationToken t)
+    {
+    }
+}";
+
+            var expected = new DiagnosticResult
+            {
+                Id = CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.DiagnosticId,
+                Message = String.Format(CancellationTokenShouldBeOptionalInPublicApisAndRequiredInInternalApisAnalyzer.MessageFormat, "T.M(System.Threading.CancellationToken)", string.Empty),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 5, 37)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(source, expected);
+        }
+
+        [TestMethod]
         public void DiagnosticForDefaultAccessibilityMethodWithOptional()
         {
             var source = @"
