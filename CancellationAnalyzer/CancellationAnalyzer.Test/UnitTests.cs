@@ -41,7 +41,7 @@ namespace CancellationAnalyzer.Test
     }";
             var expected = new DiagnosticResult
             {
-                Id = CancellationAnalyzerAnalyzer.DiagnosticId,
+                Id = CancellationTokenMustBeLastAnalyzer.DiagnosticId,
                 Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -76,7 +76,7 @@ namespace CancellationAnalyzer.Test
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new CancellationAnalyzerAnalyzer();
+            return new CancellationTokenMustBeLastAnalyzer();
         }
     }
 }

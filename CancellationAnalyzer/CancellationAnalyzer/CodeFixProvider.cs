@@ -20,7 +20,7 @@ namespace CancellationAnalyzer
     {
         public sealed override ImmutableArray<string> GetFixableDiagnosticIds()
         {
-            return ImmutableArray.Create(CancellationAnalyzerAnalyzer.DiagnosticId);
+            return ImmutableArray.Create(CancellationTokenMustBeLastAnalyzer.DiagnosticId);
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
