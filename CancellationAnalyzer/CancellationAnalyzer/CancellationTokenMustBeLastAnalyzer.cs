@@ -31,14 +31,22 @@ namespace CancellationAnalyzer
                 {
                     compilationContext.RegisterSymbolAction(symbolContext =>
                     {
-                    var methodSymbol = (IMethodSymbol)symbolContext.Symbol;
-                    for (int i = methodSymbol.Parameters.Length - 1; i >= 0; i--)
-                    {
-                        if (methodSymbol.Parameters[i].Type.Equals(cancellationTokenType)
-                            && i != methodSymbol.Parameters.Length - 1)
+                        var methodSymbol = (IMethodSymbol)symbolContext.Symbol;
+                        var last = methodSymbol.Parameters.Length - 1;
+                        if (methodSymbol.Parameters[last].IsParams)
                         {
-                            symbolContext.ReportDiagnostic(Diagnostic.Create(
-                                Rule, methodSymbol.Locations.First(), methodSymbol.ToDisplayString()));
+                            last--;
+                        }
+
+                        for (int i = last; i >= 0; i--)
+                        {
+                            var parameterType = methodSymbol.Parameters[i].Type;
+                            if (parameterType.Equals(cancellationTokenType)
+                                && i != last)
+                            {
+                                symbolContext.ReportDiagnostic(Diagnostic.Create(
+                                    Rule, methodSymbol.Locations.First(), methodSymbol.ToDisplayString()));
+                                break;
                             }
                         }
                     },

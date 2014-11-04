@@ -44,6 +44,48 @@ class T
             VerifyCSharpDiagnostic(source, expected);
         }
 
+        [TestMethod]
+        public void NoDiagnosticWhenLastParam()
+        {
+            var test = @"
+using System.Threading;
+class T
+{
+    void M(int i, CancellationToken t)
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void NoDiagnosticWhenOnlyParam()
+        {
+            var test = @"
+using System.Threading;
+class T
+{
+    void M(CancellationToken t)
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void NoDiagnosticWhenParamsComesAfter()
+        {
+            var test = @"
+using System.Threading;
+class T
+{
+    void M(CancellationToken t, params object[] args)
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new CancellationAnalyzerCodeFixProvider();
