@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace CancellationAnalyzer
 {
@@ -37,7 +38,43 @@ namespace CancellationAnalyzer
             // Find the method declaration identified by the diagnostic.
             var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<MethodDeclarationSyntax>().First();
 
-            // TODO: Implement when we have a public Change Signature API.
+            // TODO: When we have a public Change Signature API, use that
+            // instead of introducing a bunch of build breaks :(
+
+            context.RegisterFix(CodeAction.Create("Reorder parameters", async ct =>
+            {
+                var semanticModel = await context.Document.GetSemanticModelAsync(ct);
+                var methodSymbol = semanticModel.GetDeclaredSymbol(declaration);
+                var compilation = await context.Document.Project.GetCompilationAsync(ct);
+                var cancellationTokenType = compilation.GetTypeByMetadataName("System.Threading.CancellationToken");
+
+                var cancellationTokenParameters = new List<ParameterSyntax>();
+                var nonCancellationTokenParameters = new List<ParameterSyntax>();
+                foreach (var param in declaration.ParameterList.Parameters)
+                {
+                    var paramSymbol = semanticModel.GetDeclaredSymbol(param);
+                    if (paramSymbol.Type.Equals(cancellationTokenType))
+                    {
+                        cancellationTokenParameters.Add(param);
+                    }
+                    else
+                    {
+                        nonCancellationTokenParameters.Add(param);
+                    }
+                }
+
+                // TODO: This blows away trivia on the separators :(
+                var newDeclaration = declaration.WithParameterList(
+                    SyntaxFactory.ParameterList(
+                        declaration.ParameterList.OpenParenToken,
+                        SyntaxFactory.SeparatedList(nonCancellationTokenParameters.Concat(cancellationTokenParameters)),
+                        declaration.ParameterList.CloseParenToken))
+                    .WithAdditionalAnnotations(Formatter.Annotation);
+
+                var newRoot = root.ReplaceNode(declaration, newDeclaration);
+                return context.Document.WithSyntaxRoot(newRoot);
+            }),
+            diagnostic);
         }
     }
 }

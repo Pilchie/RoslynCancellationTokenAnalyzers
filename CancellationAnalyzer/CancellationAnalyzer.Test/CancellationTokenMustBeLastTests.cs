@@ -42,6 +42,16 @@ class T
             };
 
             VerifyCSharpDiagnostic(source, expected);
+
+            var fixedSource = @"
+using System.Threading;
+class T
+{
+    void M(int i, CancellationToken t)
+    {
+    }
+}";
+            VerifyCSharpFix(source, fixedSource);
         }
 
         [TestMethod]
