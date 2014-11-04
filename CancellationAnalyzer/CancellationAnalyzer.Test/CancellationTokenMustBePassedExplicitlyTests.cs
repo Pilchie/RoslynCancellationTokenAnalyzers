@@ -12,28 +12,30 @@ namespace CancellationAnalyzer.Test
     public class CancellationTokenMustBePassedExplicitlyTests : CodeFixVerifier
     {
         [TestMethod]
-        public void NoDiagnosticForDefaultAccessibilityMethodWithNoOptional()
+        public void NoDiagnosticWhenCancellationTokenNonePassedExplicitly()
         {
             var source = @"
 using System.Threading;
 public class T
 {
-    void M(CancellationToken t)
+    public void M(CancellationToken t = default(CancellationToken))
     {
+        M(CancellationToken.None);
     }
 }";
             VerifyCSharpDiagnostic(source);
         }
 
         [TestMethod]
-        public void DiagnosticForPublicMethodWithNoOptional()
+        public void DiagnosticWhenCancellationTokenOmittedExplicitly()
         {
             var source = @"
 using System.Threading;
 public class T
 {
-    public void M(CancellationToken t)
+    public void M(CancellationToken t = default(CancellationToken))
     {
+        M();
     }
 }";
 
@@ -44,7 +46,7 @@ public class T
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 5, 37)
+                            new DiagnosticResultLocation("Test0.cs", 7, 9)
                         }
             };
 

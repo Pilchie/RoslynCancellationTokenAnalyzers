@@ -29,8 +29,51 @@ namespace CancellationAnalyzer
                 var cancellationTokenType = compilationContext.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken");
                 if (cancellationTokenType != null)
                 {
+                    compilationContext.RegisterCodeBlockStartAction<SyntaxKind>(codeBlockContext =>
+                    {
+                        codeBlockContext.RegisterSyntaxNodeAction(syntaxNodeContext =>
+                        {
+                            var symbolInfo = syntaxNodeContext.SemanticModel.GetSymbolInfo(syntaxNodeContext.Node, syntaxNodeContext.CancellationToken);
+                            if (symbolInfo.Symbol != null &&
+                                symbolInfo.Symbol.Kind == SymbolKind.Method)
+                            {
+                                var methodSymbol = (IMethodSymbol)symbolInfo.Symbol;
+                                var invocation = (InvocationExpressionSyntax)syntaxNodeContext.Node;
+                                var specifiedArguments = DetermineSpecifiedArguments(methodSymbol, invocation);
+
+                                foreach (var cancellationParam in methodSymbol.Parameters.Where(p => p.Type.Equals(cancellationTokenType)))
+                                {
+                                    if (!specifiedArguments.Contains(cancellationParam.Name))
+                                    {
+                                        syntaxNodeContext.ReportDiagnostic(Diagnostic.Create
+                                            (Rule, invocation.GetLocation()));
+                                    }
+                                }
+                            }
+                        },
+                        SyntaxKind.InvocationExpression);
+                    });
                 }
             });
+        }
+
+        private static HashSet<string> DetermineSpecifiedArguments(IMethodSymbol methodSymbol, InvocationExpressionSyntax invocation)
+        {
+            var specifiedArguments = new HashSet<string>();
+            for (var i = 0; i < invocation.ArgumentList.Arguments.Count; i++)
+            {
+                var arg = invocation.ArgumentList.Arguments[i];
+                if (arg.NameColon == null)
+                {
+                    specifiedArguments.Add(methodSymbol.Parameters[i].Name);
+                }
+                else
+                {
+                    specifiedArguments.Add(arg.NameColon.Name.Identifier.Text);
+                }
+            }
+
+            return specifiedArguments;
         }
     }
 }
