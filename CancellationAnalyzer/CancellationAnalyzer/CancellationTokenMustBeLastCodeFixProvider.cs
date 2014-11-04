@@ -41,7 +41,7 @@ namespace CancellationAnalyzer
             // TODO: When we have a public Change Signature API, use that
             // instead of introducing a bunch of build breaks :(
 
-            context.RegisterFix(CodeAction.Create("Reorder parameters", async ct =>
+            context.RegisterFix(CodeAction.Create("Move CancellationToken to the end", async ct =>
             {
                 var semanticModel = await context.Document.GetSemanticModelAsync(ct);
                 var methodSymbol = semanticModel.GetDeclaredSymbol(declaration);

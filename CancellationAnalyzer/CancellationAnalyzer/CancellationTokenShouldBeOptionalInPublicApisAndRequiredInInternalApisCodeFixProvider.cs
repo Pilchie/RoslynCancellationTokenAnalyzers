@@ -43,11 +43,11 @@ namespace CancellationAnalyzer
             // instead of introducing a bunch of build breaks :(
             if (declaration.ParameterList.Parameters.Last().Default == null)
             {
-                context.RegisterFix(CodeAction.Create("Make optional", async ct => await MakeOptional(context.Document, declaration, ct)), diagnostic);
+                context.RegisterFix(CodeAction.Create("Make CancellationToken optional ", async ct => await MakeOptional(context.Document, declaration, ct)), diagnostic);
             }
             else
             {
-                context.RegisterFix(CodeAction.Create("Make required", async ct => await MakeRequired(context.Document, declaration, ct)), diagnostic);
+                context.RegisterFix(CodeAction.Create("Require CancellationToken", async ct => await MakeRequired(context.Document, declaration, ct)), diagnostic);
             }
         }
 
