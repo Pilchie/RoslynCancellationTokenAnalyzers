@@ -70,10 +70,12 @@ namespace CancellationAnalyzer
                 .Parameters
                 .Where(p => p.Type.Equals(stuff.CancellationTokenType))
                 .Select(p => p.Name)
-                .Except(specifiedParameters);
+                .Except(specifiedParameters)
+                .ToList();
 
             var invocation = stuff.Invocation;
             var hasNamedParams = stuff.Invocation.ArgumentList.Arguments.Any(arg => arg.NameColon != null);
+            var hasAllOtherParametersSpecified = stuff.Invocation.ArgumentList.Arguments.Count + parameterNamesToAdd.Count == methodSymbol.Parameters.Length;
 
             // TODO: This blows away trivia on the argument list separators.
             var newInvocation = stuff.Invocation.WithArgumentList(
@@ -82,7 +84,7 @@ namespace CancellationAnalyzer
                     SyntaxFactory.SeparatedList(
                         stuff.Invocation.ArgumentList.Arguments.Concat(
                             parameterNamesToAdd.Select(pn =>
-                                MakeArgument(pn, hasNamedParams, cancellationTokenExpression)))),
+                                MakeArgument(pn, hasNamedParams || !hasAllOtherParametersSpecified, cancellationTokenExpression)))),
                     stuff.Invocation.ArgumentList.CloseParenToken)
                 .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation));
 
