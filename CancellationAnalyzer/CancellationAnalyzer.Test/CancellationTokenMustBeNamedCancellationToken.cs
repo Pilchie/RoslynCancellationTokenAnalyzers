@@ -54,12 +54,12 @@ class C
     void M(CancellationToken cancellationToken) { }
 }";
 
-            //VerifyCSharpFix(source, fixedSource);
+            VerifyCSharpFix(source, fixedSource);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return null/*new CancellationTokenMustBeNamedCancellationTokenCodeFixProvider()*/;
+            return new CancellationTokenMustBeNamedCancellationTokenCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
