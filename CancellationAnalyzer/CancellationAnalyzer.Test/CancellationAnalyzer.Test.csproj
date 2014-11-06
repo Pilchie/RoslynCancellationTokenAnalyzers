@@ -90,6 +90,7 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CancellationTokenMustBeNamedCancellationToken.cs" />
     <Compile Include="CancellationTokenMustBePassedExplicitlyTests.cs" />
     <Compile Include="CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisTests.cs" />
     <Compile Include="Verifiers\CodeFixVerifier.cs" />
