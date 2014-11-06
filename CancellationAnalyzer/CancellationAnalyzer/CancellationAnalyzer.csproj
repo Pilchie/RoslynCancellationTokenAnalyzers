@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CancellationTokenMustBeNamedCancellationTokenCodeFixProvider.cs" />
-    <Compile Include="CancellationTokenMustBeNamedCancellationToken.cs" />
+    <Compile Include="CancellationTokenMustBeNamedCancellationTokenAnalyzer.cs" />
     <Compile Include="CancellationTokenMustBePassedExplicitlyCodeFixProvider.cs" />
     <Compile Include="CancellationTokenMustBeOptionalInPublicApisAndRequiredInInternalApisCodeFixProvider.cs" />
     <Compile Include="CancellationTokenMustBePassedExplicitlyAnalyzer.cs" />

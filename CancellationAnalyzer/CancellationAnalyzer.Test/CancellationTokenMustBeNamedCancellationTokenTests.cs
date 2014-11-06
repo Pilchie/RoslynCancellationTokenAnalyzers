@@ -9,7 +9,7 @@ using CancellationAnalyzer;
 namespace CancellationAnalyzer.Test
 {
     [TestClass]
-    public class CancellationTokenMustBeNamedCancellationToken : CodeFixVerifier
+    public class CancellationTokenMustBeNamedCancellationTokenTests : CodeFixVerifier
     {
         [TestMethod]
         public void NoDiagnosticInWhenNamedCorrectly()
