@@ -39,7 +39,7 @@ namespace CancellationAnalyzer
             var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken);
             var parameterSymbol = semanticModel.GetDeclaredSymbol(declaration);
 
-            context.RegisterFix(CodeAction.Create("Move CancellationToken to the end", ct =>
+            context.RegisterFix(CodeAction.Create("Rename '\{parameterSymbol.Name}' to 'cancellationToken'", ct =>
             {
                 return Renamer.RenameSymbolAsync(context.Document.Project.Solution, parameterSymbol, "cancellationToken", context.Document.Project.Solution.Workspace.Options, ct);
             }),
