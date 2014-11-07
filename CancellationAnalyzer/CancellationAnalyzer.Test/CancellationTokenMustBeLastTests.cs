@@ -138,6 +138,96 @@ class T
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void NoDiagnosticOnOverride()
+        {
+            var test = @"
+using System.Threading;
+class B
+{
+    protected virtual void M(CancellationToken t, int i) { }
+}
+
+class T : B
+{
+    protected override void M(CancellationToken t, int i) { }
+}";
+
+            // One diagnostic for the virtual, but none for the override.
+            var expected = new DiagnosticResult
+            {
+                Id = CancellationTokenMustBeLastAnalyzer.DiagnosticId,
+                Message = String.Format(CancellationTokenMustBeLastAnalyzer.MessageFormat, "B.M(System.Threading.CancellationToken, int)"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 5, 28)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void NoDiagnosticOnImplicitInterfaceImplentation()
+        {
+            var test = @"
+using System.Threading;
+interface I
+{
+    void M(CancellationToken t, int i);
+}
+
+class T : I
+{
+    public void M(CancellationToken t, int i) { }
+}";
+
+            // One diagnostic for the interface, but none for the implementation.
+            var expected = new DiagnosticResult
+            {
+                Id = CancellationTokenMustBeLastAnalyzer.DiagnosticId,
+                Message = String.Format(CancellationTokenMustBeLastAnalyzer.MessageFormat, "I.M(System.Threading.CancellationToken, int)"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 5, 10)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void NoDiagnosticOnExplicitInterfaceImplementation()
+        {
+            var test = @"
+using System.Threading;
+interface I
+{
+    void M(CancellationToken t, int i);
+}
+
+class T : I
+{
+    void I.M(CancellationToken t, int i) { }
+}";
+
+            // One diagnostic for the interface, but none for the implementation.
+            var expected = new DiagnosticResult
+            {
+                Id = CancellationTokenMustBeLastAnalyzer.DiagnosticId,
+                Message = String.Format(CancellationTokenMustBeLastAnalyzer.MessageFormat, "I.M(System.Threading.CancellationToken, int)"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 5, 10)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new CancellationTokenMustBeLastCodeFixProvider();

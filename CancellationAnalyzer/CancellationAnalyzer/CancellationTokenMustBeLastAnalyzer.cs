@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -27,6 +28,13 @@ namespace CancellationAnalyzer
                     compilationContext.RegisterSymbolAction(symbolContext =>
                     {
                         var methodSymbol = (IMethodSymbol)symbolContext.Symbol;
+                        if (methodSymbol.IsOverride
+                            || methodSymbol.ExplicitInterfaceImplementations.Any()
+                            || ImplementsAnInterfaceMethodImplicitly(methodSymbol))
+                        {
+                            return;
+                        }
+
                         var last = methodSymbol.Parameters.Length - 1;
                         if (last >= 0 && methodSymbol.Parameters[last].IsParams)
                         {
@@ -72,6 +80,26 @@ namespace CancellationAnalyzer
                     SymbolKind.Method);
                 }
             });
+        }
+
+        private bool ImplementsAnInterfaceMethodImplicitly(IMethodSymbol methodSymbol)
+        {
+            // This is an approximation, because another class could derive from this one
+            // and rely on methodSymbol implementing one of *it's* interfaces methods, but
+            // it's good enough.
+
+            foreach (var interfaceSymbol in methodSymbol.ContainingType.AllInterfaces)
+            {
+                foreach (var interfaceMethod in interfaceSymbol.GetMembers().Where(m => m.Kind == SymbolKind.Method))
+                {
+                    if (methodSymbol.ContainingType.FindImplementationForInterfaceMember(interfaceMethod)?.Equals(methodSymbol) ?? false)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
