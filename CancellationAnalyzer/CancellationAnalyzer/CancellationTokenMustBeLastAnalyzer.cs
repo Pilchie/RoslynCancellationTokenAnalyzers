@@ -28,9 +28,31 @@ namespace CancellationAnalyzer
                     {
                         var methodSymbol = (IMethodSymbol)symbolContext.Symbol;
                         var last = methodSymbol.Parameters.Length - 1;
-                        while (last >= 0 &&
-                            (methodSymbol.Parameters[last].IsParams ||
-                             methodSymbol.Parameters[last].RefKind != RefKind.None))
+                        if (last >= 0 && methodSymbol.Parameters[last].IsParams)
+                        {
+                            last--;
+                        }
+
+                        // Skip optional parameters, UNLESS one of them is a CancellationToken
+                        // AND it's not the last one.
+                        if (last >= 0 && methodSymbol.Parameters[last].IsOptional
+                            && !methodSymbol.Parameters[last].Type.Equals(cancellationTokenType))
+                        {
+                            last--;
+
+                            while (last >= 0 && methodSymbol.Parameters[last].IsOptional)
+                            {
+                                if (methodSymbol.Parameters[last].Type.Equals(cancellationTokenType))
+                                {
+                                    symbolContext.ReportDiagnostic(Diagnostic.Create(
+                                        Rule, methodSymbol.Locations.First(), methodSymbol.ToDisplayString()));
+                                }
+
+                                last--;
+                            }
+                        }
+
+                        while (last >= 0 && methodSymbol.Parameters[last].RefKind != RefKind.None)
                         {
                             last--;
                         }

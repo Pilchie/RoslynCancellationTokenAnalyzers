@@ -124,6 +124,20 @@ class T
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void NoDiagnosticWhenOptionalParameterComesAfterNonOptionalCancellationToken()
+        {
+            var test = @"
+using System.Threading;
+class T
+{
+    void M(CancellationToken t, int x = 0)
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new CancellationTokenMustBeLastCodeFixProvider();
