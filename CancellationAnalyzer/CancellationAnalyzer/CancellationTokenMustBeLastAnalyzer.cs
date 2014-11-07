@@ -33,7 +33,9 @@ namespace CancellationAnalyzer
                     {
                         var methodSymbol = (IMethodSymbol)symbolContext.Symbol;
                         var last = methodSymbol.Parameters.Length - 1;
-                        if (methodSymbol.Parameters[last].IsParams)
+                        while (last >= 0 &&
+                            (methodSymbol.Parameters[last].IsParams ||
+                             methodSymbol.Parameters[last].RefKind != RefKind.None))
                         {
                             last--;
                         }

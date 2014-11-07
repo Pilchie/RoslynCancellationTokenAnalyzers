@@ -96,6 +96,34 @@ class T
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void NoDiagnosticWhenOutComesAfter()
+        {
+            var test = @"
+using System.Threading;
+class T
+{
+    void M(CancellationToken t, out int i)
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void NoDiagnosticWhenRefComesAfter()
+        {
+            var test = @"
+using System.Threading;
+class T
+{
+    void M(CancellationToken t, ref int x, ref int y)
+    {
+    }
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new CancellationTokenMustBeLastCodeFixProvider();
